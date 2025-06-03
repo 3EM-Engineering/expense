@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "AL6w8OtsQLE=",
+  "dgSpecHash": "fFGewNkG9qU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ws3em\\source\\repos\\3EM-Engineering\\expense\\backend\\..csproj",
+  "projectFilePath": "C:\\Users\\ws3em\\Desktop\\mic_corso\\WebApplication1\\Project3EM\\backend\\..csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ws3em\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.4\\microsoft.aspnetcore.openapi.9.0.4.nupkg.sha512",
     "C:\\Users\\ws3em\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
