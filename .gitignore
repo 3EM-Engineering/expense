@@ -1,2 +1,10 @@
-.vs/backend/bin/ 
-backend/obj/ 
+# Ignora cartelle di build per tutti i progetti
+**/bin/
+**/obj/
+
+# Altri file temporanei utili da ignorare
+.vs/
+*.user
+*.suo
+*.pdb
+backend/ExpenseBackend.sln
