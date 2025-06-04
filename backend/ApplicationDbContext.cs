@@ -1,4 +1,5 @@
-﻿using backend.Models;
+﻿using backend.Model;
+using backend.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,5 +13,6 @@ namespace backend
         {
             
         }
+        public DbSet<GroupModel> Gruppi { get; set; }
     }
 }

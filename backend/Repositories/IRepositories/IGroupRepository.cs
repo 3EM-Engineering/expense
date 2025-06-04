@@ -5,7 +5,7 @@ namespace backend.Repositories.IRepositories
     public interface IGroupRepository
     {
         Task<List<GroupModel>> GetAllAsync();
-        Task<GroupModel> GetByIdAsync(int id);
+        Task<GroupModel> GetByIdAsync(string id);
         Task AddAsync(GroupModel gruppo);
         void Update(GroupModel gruppo);
         void Delete(GroupModel gruppo);
