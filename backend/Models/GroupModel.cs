@@ -1,7 +1,6 @@
 ﻿namespace backend.Model
 {
     public class GroupModel
-    public class Gruppo
     {
         public int Id { get; set; }
         public string Nome { get; set; }
