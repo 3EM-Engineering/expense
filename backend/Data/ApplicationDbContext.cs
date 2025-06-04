@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using backend.Models;
+﻿using backend.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<Expense> Expenses { get; set; }
-        public DbSet<ExpenseShare> Quote { get; set; }  
+        public DbSet<ExpenseShare> ExpenseShares { get; set; }
     }
 }
