@@ -1,29 +1,30 @@
-﻿using backend.Model;
+﻿using backend.Models;
 using backend.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using backend.Data;
 
 namespace backend.Repositories
 {
     public class GroupRepository : IGroupRepository
     {
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public GroupRepository(AppDbContext context)
+        public GroupRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public async Task<List<GroupModel>> GetAllAsync()
         {
-            return await _context.Gruppi
+            return await _context.Groups
                 .Include(g => g.Membri)
                 .Include(g => g.SpeseCollegate)
                 .ToListAsync();
         }
 
-        public async Task<GroupModel> GetByIdAsync(int id)
+        public async Task<GroupModel> GetByIdAsync(string id)
         {
-            return await _context.Gruppi
+            return await _context.Groups
                 .Include(g => g.Membri)
                 .Include(g => g.SpeseCollegate)
                 .FirstOrDefaultAsync(g => g.Id == id);
@@ -31,17 +32,17 @@ namespace backend.Repositories
 
         public async Task AddAsync(GroupModel gruppo)
         {
-            await _context.Gruppi.AddAsync(gruppo);
+            await _context.Groups.AddAsync(gruppo);
         }
 
         public void Update(GroupModel gruppo)
         {
-            _context.Gruppi.Update(gruppo);
+            _context.Groups.Update(gruppo);
         }
 
         public void Delete(GroupModel gruppo)
         {
-            _context.Gruppi.Remove(gruppo);
+            _context.Groups.Remove(gruppo);
         }
 
         public async Task<bool> SaveChangesAsync()

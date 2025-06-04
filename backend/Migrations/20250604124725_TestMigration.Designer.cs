@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Data;
 
@@ -11,9 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250604124725_TestMigration")]
+    partial class TestMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,6 +158,28 @@ namespace backend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("backend.Model.GroupModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CreatoreId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatoreId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatoreId1");
+
+                    b.ToTable("Gruppi");
+                });
+
             modelBuilder.Entity("backend.Models.Expense", b =>
                 {
                     b.Property<int>("Id")
@@ -169,9 +194,6 @@ namespace backend.Migrations
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("GroupModelId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("GruppoId")
                         .HasColumnType("int");
 
@@ -183,8 +205,6 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupModelId");
 
                     b.ToTable("Expenses");
                 });
@@ -213,41 +233,6 @@ namespace backend.Migrations
                     b.ToTable("ExpenseShares");
                 });
 
-            modelBuilder.Entity("backend.Models.GroupMember", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("GroupId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "GroupId");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("GroupMembers");
-                });
-
-            modelBuilder.Entity("backend.Models.GroupModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CreatoreId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatoreId");
-
-                    b.ToTable("Groups");
-                });
-
             modelBuilder.Entity("backend.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -266,6 +251,9 @@ namespace backend.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("GroupModelId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -301,6 +289,8 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupModelId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -364,11 +354,13 @@ namespace backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("backend.Models.Expense", b =>
+            modelBuilder.Entity("backend.Model.GroupModel", b =>
                 {
-                    b.HasOne("backend.Models.GroupModel", null)
-                        .WithMany("SpeseCollegate")
-                        .HasForeignKey("GroupModelId");
+                    b.HasOne("backend.Models.User", "Creatore")
+                        .WithMany()
+                        .HasForeignKey("CreatoreId1");
+
+                    b.Navigation("Creatore");
                 });
 
             modelBuilder.Entity("backend.Models.ExpenseShare", b =>
@@ -380,51 +372,21 @@ namespace backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("backend.Models.GroupMember", b =>
+            modelBuilder.Entity("backend.Models.User", b =>
                 {
-                    b.HasOne("backend.Models.GroupModel", "Group")
+                    b.HasOne("backend.Model.GroupModel", null)
                         .WithMany("Membri")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("GroupMemberships")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("User");
+                        .HasForeignKey("GroupModelId");
                 });
 
-            modelBuilder.Entity("backend.Models.GroupModel", b =>
+            modelBuilder.Entity("backend.Model.GroupModel", b =>
                 {
-                    b.HasOne("backend.Models.User", "Creatore")
-                        .WithMany()
-                        .HasForeignKey("CreatoreId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Creatore");
+                    b.Navigation("Membri");
                 });
 
             modelBuilder.Entity("backend.Models.Expense", b =>
                 {
                     b.Navigation("Quote");
-                });
-
-            modelBuilder.Entity("backend.Models.GroupModel", b =>
-                {
-                    b.Navigation("Membri");
-
-                    b.Navigation("SpeseCollegate");
-                });
-
-            modelBuilder.Entity("backend.Models.User", b =>
-                {
-                    b.Navigation("GroupMemberships");
                 });
 #pragma warning restore 612, 618
         }

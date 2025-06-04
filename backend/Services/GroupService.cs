@@ -1,12 +1,7 @@
 ﻿using backend.Dto;
-using backend.Model;
-using backend.Repositories;
+using backend.Models;
 using backend.Repositories.IRepositories;
 using backend.Services.IServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace backend.Services
 {
@@ -23,17 +18,17 @@ namespace backend.Services
         {
             var gruppi = await _repository.GetAllAsync();
 
-            return gruppi.Select(g => new GroupExpenceDto
+            return gruppi.Select(static g => new GroupExpenceDto
             {
                 Id = g.Id,
                 Nome = g.Nome,
                 CreatoreId = g.CreatoreId,
-                MembriIds = g.Membri.Select(m => m.Id).ToList(),
+                MembriIds = g.Membri.Select(m => m.UserId).ToList(),
                 SpeseIds = g.SpeseCollegate.Select(s => s.Id).ToList()
             }).ToList();
         }
 
-        public async Task<GroupExpenceDto> GetByIdAsync(int id)
+        public async Task<GroupExpenceDto> GetByIdAsync(string id)
         {
             var gruppo = await _repository.GetByIdAsync(id);
 
@@ -44,18 +39,19 @@ namespace backend.Services
                 Id = gruppo.Id,
                 Nome = gruppo.Nome,
                 CreatoreId = gruppo.CreatoreId,
-                MembriIds = gruppo.Membri.Select(m => m.Id).ToList(),
+                MembriIds = gruppo.Membri.Select(m => m.UserId).ToList(),
                 SpeseIds = gruppo.SpeseCollegate.Select(s => s.Id).ToList()
             };
         }
 
         public async Task<GroupExpenceDto> CreateAsync(GroupExpenceDto dto)
         {
-            var gruppo = new GroupModel
+            var gruppo = new Models.GroupModel
             {
+                Id = Guid.NewGuid().ToString(), // Genera un ID unico
                 Nome = dto.Nome,
                 CreatoreId = dto.CreatoreId,
-                Membri = new List<User>()
+                Membri = new List<GroupMember>()
             };
 
             // Caricamento Membri da DB (da aggiungere se necessario)
@@ -67,7 +63,7 @@ namespace backend.Services
             return dto;
         }
 
-        public async Task UpdateAsync(int id, GroupExpenceDto dto)
+        public async Task UpdateAsync(string id, GroupExpenceDto dto)
         {
             var gruppo = await _repository.GetByIdAsync(id);
             if (gruppo == null) throw new Exception("Gruppo non trovato");
@@ -81,7 +77,7 @@ namespace backend.Services
             await _repository.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             var gruppo = await _repository.GetByIdAsync(id);
             if (gruppo == null) throw new Exception("Gruppo non trovato");
