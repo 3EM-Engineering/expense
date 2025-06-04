@@ -1,14 +1,15 @@
 ﻿using backend.Model;
 using backend.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using backend.Data;
 
 namespace backend.Repositories
 {
     public class GroupRepository : IGroupRepository
     {
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public GroupRepository(AppDbContext context)
+        public GroupRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -17,15 +18,15 @@ namespace backend.Repositories
         {
             return await _context.Gruppi
                 .Include(g => g.Membri)
-                .Include(g => g.SpeseCollegate)
+                //.Include(g => g.SpeseCollegate)
                 .ToListAsync();
         }
 
-        public async Task<GroupModel> GetByIdAsync(int id)
+        public async Task<GroupModel> GetByIdAsync(string id)
         {
             return await _context.Gruppi
                 .Include(g => g.Membri)
-                .Include(g => g.SpeseCollegate)
+                //.Include(g => g.SpeseCollegate)
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 

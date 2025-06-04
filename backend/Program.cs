@@ -1,6 +1,6 @@
 using backend.Repositories;
 using backend.Services;
-using backend;
+using backend.Data;
 ﻿using System.Text;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
