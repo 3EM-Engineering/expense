@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using backend.Dto;
-using backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using backend.Models;
+using backend.Services.IServices;
 
 namespace backend.Controllers
 {

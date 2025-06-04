@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using backend.Models;
 
-namespace backend.Services
+namespace backend.Services.IServices
 {
     public interface IExpenseServices
     {

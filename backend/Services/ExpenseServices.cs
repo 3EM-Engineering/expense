@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using backend.Models;
-using backend.Repositories;
+using backend.Repositories.IRepositories;
+using backend.Services.IServices;
 
 namespace backend.Services
 {

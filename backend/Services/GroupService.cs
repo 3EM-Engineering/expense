@@ -1,12 +1,7 @@
 ﻿using backend.Dto;
 using backend.Models;
-using backend.Repositories;
 using backend.Repositories.IRepositories;
 using backend.Services.IServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace backend.Services
 {
@@ -28,8 +23,8 @@ namespace backend.Services
                 Id = g.Id,
                 Nome = g.Nome,
                 CreatoreId = g.CreatoreId,
-                MembriIds = g.Membri.Select(m => m.Id).ToList(),
-                //SpeseIds = g.SpeseCollegate.Select(s => s.Id).ToList()
+                MembriIds = g.Membri.Select(m => m.UserId).ToList(),
+                SpeseIds = g.SpeseCollegate.Select(s => s.Id).ToList()
             }).ToList();
         }
 
@@ -44,18 +39,19 @@ namespace backend.Services
                 Id = gruppo.Id,
                 Nome = gruppo.Nome,
                 CreatoreId = gruppo.CreatoreId,
-                MembriIds = gruppo.Membri.Select(m => m.Id).ToList(),
-                //SpeseIds = gruppo.SpeseCollegate.Select(s => s.Id).ToList()
+                MembriIds = gruppo.Membri.Select(m => m.UserId).ToList(),
+                SpeseIds = gruppo.SpeseCollegate.Select(s => s.Id).ToList()
             };
         }
 
         public async Task<GroupExpenceDto> CreateAsync(GroupExpenceDto dto)
         {
-            var gruppo = new Model.GroupModel
+            var gruppo = new Models.GroupModel
             {
+                Id = Guid.NewGuid().ToString(), // Genera un ID unico
                 Nome = dto.Nome,
                 CreatoreId = dto.CreatoreId,
-                Membri = new List<User>()
+                Membri = new List<GroupMember>()
             };
 
             // Caricamento Membri da DB (da aggiungere se necessario)

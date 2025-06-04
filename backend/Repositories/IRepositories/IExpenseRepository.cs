@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using backend.Models;
 
-namespace backend.Repositories
+namespace backend.Repositories.IRepositories
 {
     public interface IExpenseRepository
     {

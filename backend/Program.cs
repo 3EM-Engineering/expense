@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using backend.Repositories.IRepositories;
+using backend.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +42,8 @@ var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(
