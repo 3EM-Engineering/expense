@@ -11,7 +11,12 @@ using backend.Data; // ← cambia se il tuo DbContext è in una cartella diversa
 var builder = WebApplication.CreateBuilder(args);
 
 // Carica variabili da .env
- 
+ Env.Load();
+
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+
 // Add services
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
