@@ -13,7 +13,7 @@ namespace backend.Repositories
             _context = context;
         }
 
-        public async Task<List<Gruppo>> GetAllAsync()
+        public async Task<List<GroupModel>> GetAllAsync()
         {
             return await _context.Gruppi
                 .Include(g => g.Membri)
@@ -21,7 +21,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Gruppo> GetByIdAsync(int id)
+        public async Task<GroupModel> GetByIdAsync(int id)
         {
             return await _context.Gruppi
                 .Include(g => g.Membri)
@@ -29,17 +29,17 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public async Task AddAsync(Gruppo gruppo)
+        public async Task AddAsync(GroupModel gruppo)
         {
             await _context.Gruppi.AddAsync(gruppo);
         }
 
-        public void Update(Gruppo gruppo)
+        public void Update(GroupModel gruppo)
         {
             _context.Gruppi.Update(gruppo);
         }
 
-        public void Delete(Gruppo gruppo)
+        public void Delete(GroupModel gruppo)
         {
             _context.Gruppi.Remove(gruppo);
         }

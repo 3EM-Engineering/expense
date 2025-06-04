@@ -1,5 +1,6 @@
 ﻿using backend.Dto;
 using backend.Model;
+using backend.Repositories;
 using backend.Repositories.IRepositories;
 using backend.Services.IServices;
 using System;
@@ -50,7 +51,7 @@ namespace backend.Services
 
         public async Task<GroupExpenceDto> CreateAsync(GroupExpenceDto dto)
         {
-            var gruppo = new Gruppo
+            var gruppo = new GroupModel
             {
                 Nome = dto.Nome,
                 CreatoreId = dto.CreatoreId,
