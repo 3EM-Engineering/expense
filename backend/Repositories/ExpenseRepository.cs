@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using backend.Models;
 using backend.Data;
 using Microsoft.EntityFrameworkCore;
+using backend.Repositories.IRepositories;
 namespace backend.Repositories
 {
     public class ExpenseRepository : IExpenseRepository
