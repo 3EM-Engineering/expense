@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Mvc;
 using backend.Repositories.IRepositories;
 using backend.Services.IServices;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +45,9 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddControllers();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
     {
@@ -54,11 +57,6 @@ builder.Services.AddControllers()
     {
         opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
-builder.Services.AddControllers();
-builder.Services.AddScoped<IGroupService, GroupService>();
-builder.Services.AddScoped<IGroupRepository, GroupRepository>();
-builder.Services.AddScoped<IExpenseServices, ExpenseServices>();
-builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(
