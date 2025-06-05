@@ -52,9 +52,9 @@ namespace backend.Repositories
             }
         }
 
-        public Task SaveChangesAsync()
+        public async Task<int> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            return await _context.SaveChangesAsync();
         }
 
         public async Task AddAsync(Expense expense)

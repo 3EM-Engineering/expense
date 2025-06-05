@@ -11,6 +11,6 @@ namespace backend.Repositories.IRepositories
         Task AddAsync(Expense expense);            
         Task UpdateAsync(Expense expense);
         Task DeleteAsync(int id);
-        Task SaveChangesAsync();
+        Task<int> SaveChangesAsync();
     }
 }
