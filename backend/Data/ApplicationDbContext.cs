@@ -32,7 +32,7 @@ namespace backend.Data
                 .HasOne(gm => gm.User)
                 .WithMany(u => u.GroupMemberships)
                 .HasForeignKey(gm => gm.UserId)
-                .OnDelete(DeleteBehavior.Restrict); // ✅ modificato da Cascade a Restrict
+                .OnDelete(DeleteBehavior.Restrict); // ✅ Restrict
 
             modelBuilder.Entity<GroupMember>()
                 .HasOne(gm => gm.Group)
