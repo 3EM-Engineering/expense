@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using backend.Models;
+﻿using backend.Dto;
 
-namespace backend.Services
+public interface IExpenseServices
 {
-    public interface IExpenseServices
-    {
-        Task<List<Expense>> GetAllExpensesAsync();
-        Task<Expense> GetExpenseByIdAsync(int id);
-        Task<Expense> CreateExpenseAsync(Expense expense);
-        Task UpdateExpenseAsync(Expense expense);
-        Task DeleteExpenseAsync(int id);
-    }
+    Task<List<ExpenseDTO>> GetAllAsync();
+    Task<ExpenseDTO> GetByIdAsync(int id);
+    Task<ExpenseDTO> CreateAsync(ExpenseDTO dto);
+    Task<ExpenseDTO> UpdateAsync(ExpenseDTO dto);
+    Task DeleteAsync(int id);
+    Task SaveChangeAsync();
+    Task AddAsync(ExpenseDTO dto);
 }

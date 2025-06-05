@@ -8,8 +8,9 @@ namespace backend.Repositories
     {
         Task<List<Expense>> GetAllAsync();
         Task<Expense> GetByIdAsync(int id);
-        Task<Expense> CreateAsync(Expense expense);
+        Task AddAsync(Expense expense);            
         Task UpdateAsync(Expense expense);
         Task DeleteAsync(int id);
+        Task SaveChangesAsync();
     }
 }

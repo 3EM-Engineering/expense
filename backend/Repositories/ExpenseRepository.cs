@@ -50,5 +50,15 @@ namespace backend.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public Task SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task AddAsync(Expense expense)
+        {
+            await _context.Expenses.AddAsync(expense);
+        }
     }
 }
