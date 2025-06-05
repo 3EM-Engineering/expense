@@ -2,6 +2,9 @@
 **/bin/
 **/obj/
 /node_modules/
+launchSettings.json
+appsettings.Development.json
+appsettings.Test.json
 
 # Altri file temporanei utili da ignorare
 .vs/
