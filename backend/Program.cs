@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using backend.Repositories.IRepositories;
 using backend.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,9 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IExpenseShareRepository, ExpenseShareRepository>();
+builder.Services.AddScoped<IExpenseServices, ExpenseServices>();
+
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddControllers()

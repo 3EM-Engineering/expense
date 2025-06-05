@@ -11,8 +11,10 @@ namespace backend.Services
     public class ExpenseServices : IExpenseServices
     {
         private readonly IExpenseRepository _repository;
+        private readonly IExpenseShareServices _expenseShareService;
 
-        public ExpenseServices(IExpenseRepository repository)
+
+        public ExpenseServices(IExpenseRepository repository, IExpenseShareServices expenseShareService)
         {
             _repository = repository;
         }
@@ -22,17 +24,17 @@ namespace backend.Services
             var expenses = await _repository.GetAllAsync();
             var dtoList = new List<ExpenseDTO>();
 
-            foreach (var e in expenses)
+            foreach (var exp in expenses)
             {
                 dtoList.Add(new ExpenseDTO
                 {
-                    Id = e.Id,
-                    Titolo = e.Titolo,
-                    ImportoTotale = e.ImportoTotale,
-                    Data = e.Data,
-                    CreatoreId = e.CreatoreId,
-                    GruppoId = e.GruppoId
-                    // Aggiungi anche Quote se serve
+                    Id = exp.Id,
+                    Titolo = exp.Titolo,
+                    ImportoTotale = exp.ImportoTotale,
+                    Data = exp.Data,
+                    CreatoreId = exp.CreatoreId,
+                    GruppoId = exp.GruppoId
+                   
                 });
             }
 
@@ -41,20 +43,28 @@ namespace backend.Services
 
         public async Task<ExpenseDTO> GetByIdAsync(int id)
         {
-            var e = await _repository.GetByIdAsync(id);
-            if (e == null) return null;
+            var exp = await _repository.GetByIdAsync(id);
+            if (exp == null) return null;
+
+            var shares = await _expenseShareService.GetByExpenseIdAsync(exp.Id);
 
             return new ExpenseDTO
             {
-                Id = e.Id,
-                Titolo = e.Titolo,
-                ImportoTotale = e.ImportoTotale,
-                Data = e.Data,
-                CreatoreId = e.CreatoreId,
-                GruppoId = e.GruppoId
-                // Aggiungi anche Quote se serve
+                Id = exp.Id,
+                Titolo = exp.Titolo,
+                ImportoTotale = exp.ImportoTotale,
+                Data = exp.Data,
+                CreatoreId = exp.CreatoreId,
+                GruppoId = exp.GruppoId,
+                Quote = shares.Select(s => new ExpenseShareDTO
+                {
+                    
+                    UserId = s.UserId,
+                    Importo = s.Importo
+                }).ToList()
             };
         }
+
 
         public async Task<ExpenseDTO> CreateAsync(ExpenseDTO dto)
         {
@@ -64,16 +74,29 @@ namespace backend.Services
                 ImportoTotale = dto.ImportoTotale,
                 Data = dto.Data == default ? DateTime.UtcNow : dto.Data,
                 CreatoreId = dto.CreatoreId,
-                GruppoId = dto.GruppoId,
-                Quote = new List<ExpenseShare>() // puoi mappare dto.Quote se presente
+                GruppoId = dto.GruppoId
             };
 
             await _repository.AddAsync(expense);
             await _repository.SaveChangesAsync();
 
             dto.Id = expense.Id;
+
+            if (dto.Quote != null && dto.Quote.Any())
+            {
+                var shares = dto.Quote.Select(q => new ExpenseShare
+                {
+                    ExpenseId = expense.Id,
+                    UserId = q.UserId,
+                    Importo = q.Importo
+                }).ToList();
+
+                await _expenseShareService.AddOrUpdateSharesAsync(expense.Id, shares);
+            }
+
             return dto;
         }
+
 
         public async Task<ExpenseDTO> UpdateAsync(ExpenseDTO dto)
         {

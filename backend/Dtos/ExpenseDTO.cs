@@ -12,6 +12,6 @@ namespace backend.Dto
         public int CreatoreId { get; set; }
         public int GruppoId { get; set; }
 
-        public List<ExpenseShare>? Quote { get; set; } = new List<ExpenseShare>();
+        public List<ExpenseShareDTO>? Quote { get; set; } = new List<ExpenseShareDTO>();
     }
 }
