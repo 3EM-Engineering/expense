@@ -1,6 +1,10 @@
 # Ignora cartelle di build per tutti i progetti
 **/bin/
 **/obj/
+/node_modules/
+launchSettings.json
+appsettings.Development.json
+appsettings.Test.json
 
 # Altri file temporanei utili da ignorare
 .vs/
@@ -10,6 +14,8 @@
 backend/ExpenseBackend.sln
 
 
+
 # Variabili d'ambiente
 .env
 .env.*
+

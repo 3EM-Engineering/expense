@@ -1,7 +1,7 @@
 using backend.Repositories;
 using backend.Services;
 using backend.Data;
-﻿using System.Text;
+using System.Text;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -9,39 +9,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using backend.Repositories.IRepositories;
 using backend.Services.IServices;
-using Microsoft.AspNetCore.Mvc;
+using backend.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-// Carica variabili da .env
- Env.Load();
-
-var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
-var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
-
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-//.AddJwtBearer(options =>
-//{
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuer = true,
-//        ValidateAudience = false,
-//        ValidateLifetime = true,
-//        ValidateIssuerSigningKey = true,
-//        ValidIssuer = jwtIssuer,
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
-//    };
-//});
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-{
-    options.SuppressModelStateInvalidFilter = true;
-});
 
 builder.Services.AddAuthorization();
 
@@ -57,6 +29,15 @@ builder.Services.AddControllers()
     {
         opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
+builder.Services.AddControllers();
+
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+builder.Services.AddScoped<IExpenseServices, ExpenseServices>();
+builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+builder.Services.AddScoped<IRepository<GroupInviteModel>, Repository<GroupInviteModel>>();
+builder.Services.AddScoped<IGroupInviteService, GroupInviteService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(
