@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using backend.Models;
+﻿using backend.Dto;
 
-namespace backend.Services.IServices
+namespace backend.Services
 {
     public interface IExpenseServices
     {
