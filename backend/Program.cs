@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using backend.Repositories.IRepositories;
 using backend.Services.IServices;
+using backend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,10 +56,14 @@ builder.Services.AddControllers()
         opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 builder.Services.AddControllers();
+
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddScoped<IExpenseServices, ExpenseServices>();
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+builder.Services.AddScoped<IRepository<GroupInviteModel>, Repository<GroupInviteModel>>();
+builder.Services.AddScoped<IGroupInviteService, GroupInviteService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(
