@@ -63,28 +63,28 @@ builder.Services.AddSingleton(
     resolver => resolver.GetRequiredService<IOptions<JwtToken>>().Value
     );
 
-// Middleware settings
-var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtToken>();
-var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
+//// Middleware settings
+//var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtToken>();
+//var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings.Issuer,
-        ValidAudience = jwtSettings.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(key)
-    };
-});
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer(options =>
+//{
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuer = true,
+//        ValidateAudience = true,
+//        ValidateLifetime = true,
+//        ValidateIssuerSigningKey = true,
+//        ValidIssuer = jwtSettings.Issuer,
+//        ValidAudience = jwtSettings.Audience,
+//        IssuerSigningKey = new SymmetricSecurityKey(key)
+//    };
+//});
 
 // For Swagger test (Optional)
 builder.Services.AddSwaggerGen(c =>

@@ -1,6 +1,7 @@
 # Ignora cartelle di build per tutti i progetti
 **/bin/
 **/obj/
+/node_modules/
 
 # Altri file temporanei utili da ignorare
 .vs/
@@ -10,6 +11,8 @@
 backend/ExpenseBackend.sln
 
 
+
 # Variabili d'ambiente
 .env
 .env.*
+
