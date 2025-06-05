@@ -9,35 +9,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using backend.Repositories.IRepositories;
 using backend.Services.IServices;
+using backend.Models;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 // Carica variabili da .env
  Env.Load();
-
-var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
-var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
-
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-//.AddJwtBearer(options =>
-//{
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuer = true,
-//        ValidateAudience = false,
-//        ValidateLifetime = true,
-//        ValidateIssuerSigningKey = true,
-//        ValidIssuer = jwtIssuer,
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
-//    };
-//});
-
 
 builder.Services.AddAuthorization();
 
@@ -49,23 +29,66 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(
         options => options.UseSqlServer(builder.Configuration.GetConnectionString("DBconnection"))
     );
+builder.Services.AddScoped(typeof(Repository<>));
 
-builder.Services.AddSwaggerGen(opt =>
+builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
-    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireDigit = false;
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
+}).AddEntityFrameworkStores<ApplicationDbContext>()
+  .AddDefaultTokenProviders();
 
-    // JWT support in Swagger
-    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+builder.Services.AddScoped<AuthService>();
+
+builder.Services.Configure<JwtToken>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.AddSingleton(
+    resolver => resolver.GetRequiredService<IOptions<JwtToken>>().Value
+    );
+
+// Middleware settings
+var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtToken>();
+var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        Name = "Authorization",
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
+
+// For Swagger test (Optional)
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        Description = "Inserisci: Bearer {token}"
+        Description = "Inserisci il token JWT con la parola 'Bearer' davanti (es. 'Bearer abc123')",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
     });
 
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -77,9 +100,6 @@ builder.Services.AddSwaggerGen(opt =>
     });
 });
 
-// DI per i tuoi repository e servizi
-// builder.Services.AddScoped<IGroupRepository, GroupRepository>();
-// builder.Services.AddScoped<IGroupService, GroupService>();
 
 var app = builder.Build();
 
