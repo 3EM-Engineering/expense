@@ -15,11 +15,11 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Env.Load();
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<IGroupService, GroupService>();
-builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
     {
@@ -29,7 +29,6 @@ builder.Services.AddControllers()
     {
         opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
-builder.Services.AddControllers();
 
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
@@ -37,6 +36,7 @@ builder.Services.AddScoped<IExpenseServices, ExpenseServices>();
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddScoped<IRepository<GroupInviteModel>, Repository<GroupInviteModel>>();
 builder.Services.AddScoped<IGroupInviteService, GroupInviteService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -44,6 +44,52 @@ builder.Services.AddDbContext<ApplicationDbContext>(
         options => options.UseSqlServer(builder.Configuration.GetConnectionString("DBconnection"))
     );
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireDigit = false;
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
+}).AddEntityFrameworkStores<ApplicationDbContext>()
+  .AddDefaultTokenProviders();
+
+// Binding Jwt Settings
+builder.Services.Configure<JwtToken>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.AddSingleton(
+    resolver => resolver.GetRequiredService<IOptions<JwtToken>>().Value
+    );
+
+// Middleware settings
+var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtToken>();
+var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
+
+// For Swagger test (Optional)
 builder.Services.AddSwaggerGen(opt =>
 {
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
@@ -70,10 +116,6 @@ builder.Services.AddSwaggerGen(opt =>
         }
     });
 });
-
-// DI per i tuoi repository e servizi
-// builder.Services.AddScoped<IGroupRepository, GroupRepository>();
-// builder.Services.AddScoped<IGroupService, GroupService>();
 
 var app = builder.Build();
 
