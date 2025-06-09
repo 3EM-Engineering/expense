@@ -1,5 +1,6 @@
 ﻿using backend.Models;
 using backend.Services;
+using backend.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,9 @@ namespace backend.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private AuthService _authService;
+        private IAuthService _authService;
         public AuthController(
-                AuthService authService
+                IAuthService authService
             )
         {
             _authService = authService;

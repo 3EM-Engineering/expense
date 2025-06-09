@@ -40,6 +40,7 @@ builder.Services.AddControllers()
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddScoped<IExpenseServices, ExpenseServices>();
+builder.Services.AddScoped<IExpenseShareServices, ExpenseShareServices>();
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddScoped<IRepository<GroupInviteModel>, Repository<GroupInviteModel>>();
 builder.Services.AddScoped<IGroupInviteService, GroupInviteService>();
