@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using backend.Models;
 using backend.Repositories.IRepositories;
@@ -9,7 +10,7 @@ namespace backend.Services
     public class ExpenseShareServices : IExpenseShareServices
     {
         private readonly IExpenseShareRepository _repository;
-
+        
         public ExpenseShareServices(IExpenseShareRepository repository)
         {
             _repository = repository;
@@ -22,11 +23,15 @@ namespace backend.Services
 
         public async Task AddOrUpdateSharesAsync(int expenseId, List<ExpenseShare> shares)
         {
-            await _repository.DeleteByExpenseIdAsync(expenseId); // elimina le expesesShare precedenti
-            foreach (var share in shares)
+            await _repository.DeleteByExpenseIdAsync(expenseId); // elimina le ExpenseShare precedenti
+
+            if (shares != null && shares.Any())
             {
-                share.ExpenseId = expenseId;
-                await _repository.AddAsync(share);
+                foreach (var share in shares)
+                {
+                    share.ExpenseId = expenseId;
+                    await _repository.AddAsync(share);
+                }
             }
 
             await _repository.SaveChangesAsync();

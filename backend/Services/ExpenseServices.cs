@@ -17,6 +17,7 @@ namespace backend.Services
         public ExpenseServices(IExpenseRepository repository, IExpenseShareServices expenseShareService)
         {
             _repository = repository;
+            _expenseShareService = expenseShareService;
         }
 
         public async Task<List<ExpenseDTO>> GetAllAsync()
@@ -113,8 +114,21 @@ namespace backend.Services
             await _repository.UpdateAsync(expense);
             await _repository.SaveChangesAsync();
 
+            if (dto.Quote != null && dto.Quote.Any())
+            {
+                var updatedShares = dto.Quote.Select(q => new ExpenseShare
+                {
+                    ExpenseId = dto.Id,
+                    UserId = q.UserId,
+                    Importo = q.Importo
+                }).ToList();
+
+                await _expenseShareService.AddOrUpdateSharesAsync(dto.Id, updatedShares);
+            }
+
             return dto;
         }
+
 
         public async Task DeleteAsync(int id)
         {
@@ -144,5 +158,33 @@ namespace backend.Services
 
             await _repository.AddAsync(expense);
         }
+        public async Task<List<ExpenseDTO>> GetByGroupIdAsync(int groupId)
+        {
+            var expenses = await _repository.GetByGroupIdAsync(groupId);
+            var dtoList = new List<ExpenseDTO>();
+
+            foreach (var exp in expenses)
+            {
+                var shares = await _expenseShareService.GetByExpenseIdAsync(exp.Id);
+
+                dtoList.Add(new ExpenseDTO
+                {
+                    Id = exp.Id,
+                    Titolo = exp.Titolo,
+                    ImportoTotale = exp.ImportoTotale,
+                    Data = exp.Data,
+                    CreatoreId = exp.CreatoreId,
+                    GruppoId = exp.GruppoId,
+                    Quote = shares.Select(s => new ExpenseShareDTO
+                    {
+                        UserId = s.UserId,
+                        Importo = s.Importo
+                    }).ToList()
+                });
+            }
+
+            return dtoList;
+        }
+
     }
 }
