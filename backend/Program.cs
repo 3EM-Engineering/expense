@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using backend.Repositories.IRepositories;
 using backend.Services.IServices;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting.Builder;
 using backend.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -20,6 +22,11 @@ Env.Load();
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IExpenseShareRepository, ExpenseShareRepository>();
+builder.Services.AddScoped<IExpenseServices, ExpenseServices>();
+
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
     {
