@@ -10,5 +10,6 @@ namespace backend.Services
         Task<ExpenseDTO> UpdateAsync(ExpenseDTO dto);
         Task DeleteAsync(int id);
         Task AddAsync(ExpenseDTO dto);
+        Task<List<ExpenseDTO>> GetByGroupIdAsync(int groupId);
     }
 }

@@ -12,5 +12,7 @@ namespace backend.Repositories.IRepositories
         Task UpdateAsync(Expense expense);
         Task DeleteAsync(int id);
         Task<int> SaveChangesAsync();
+        Task<List<Expense>> GetByGroupIdAsync(int groupId);
+
     }
 }

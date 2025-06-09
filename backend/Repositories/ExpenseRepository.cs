@@ -61,5 +61,12 @@ namespace backend.Repositories
         {
             await _context.Expenses.AddAsync(expense);
         }
+        public async Task<List<Expense>> GetByGroupIdAsync(int groupId)
+        {
+            return await _context.Expenses
+                .Where(e => e.GruppoId == groupId)
+                .ToListAsync();
+        }
+
     }
 }
