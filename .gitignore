@@ -18,3 +18,4 @@ backend/ExpenseBackend.sln
 # Variabili d'ambiente
 .env
 .env.*
+
