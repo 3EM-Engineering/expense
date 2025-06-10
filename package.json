@@ -1,23 +1,25 @@
 {
-    "name": "expense",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "start": "concurrently \"dotnet run --project backend\" \"npm start --prefix frontend\""
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/3EM-Engineering/expense.git"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/3EM-Engineering/expense/issues"
-    },
-    "homepage": "https://github.com/3EM-Engineering/expense#readme",
-    "devDependencies": {
-        "concurrently": "^9.1.2"
-    }
+  "name": "expense",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "concurrently \"dotnet run --project backend --launch-profile=\\\"Dev - HTTP\\\"\" \"npm start --prefix frontend\"",
+    "start:test": "concurrently \"dotnet run --project backend --launch-profile=\\\"Test - HTTP\\\"\" \"npm start --prefix frontend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3EM-Engineering/expense.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/3EM-Engineering/expense/issues"
+  },
+  "homepage": "https://github.com/3EM-Engineering/expense#readme",
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3"
+  }
 }

@@ -51,5 +51,22 @@ namespace backend.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task AddAsync(Expense expense)
+        {
+            await _context.Expenses.AddAsync(expense);
+        }
+        public async Task<List<Expense>> GetByGroupIdAsync(int groupId)
+        {
+            return await _context.Expenses
+                .Where(e => e.GruppoId == groupId)
+                .ToListAsync();
+        }
+
     }
 }

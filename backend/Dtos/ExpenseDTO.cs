@@ -1,10 +1,17 @@
 ﻿using System;
+using backend.Models;
 
 namespace backend.Dto
 {
     public class ExpenseDTO
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public int Id { get; set; }
+        public string Titolo { get; set; }
+        public decimal ImportoTotale { get; set; }
+        public DateTime Data { get; set; }
+        public int CreatoreId { get; set; }
+        public int GruppoId { get; set; }
+
+        public List<ExpenseShareDTO>? Quote { get; set; } = new List<ExpenseShareDTO>();
     }
 }

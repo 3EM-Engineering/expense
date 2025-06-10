@@ -12,6 +12,7 @@ namespace backend.Data
         public DbSet<ExpenseShare> ExpenseShares { get; set; }
         public DbSet<GroupModel> Groups { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; } // 👈 Tabella di join esplicita
+        public DbSet<GroupInviteModel> GroupInvites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

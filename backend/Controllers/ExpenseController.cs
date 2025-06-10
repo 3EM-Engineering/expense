@@ -5,6 +5,7 @@ using backend.Dto;
 using Microsoft.AspNetCore.Authorization;
 using backend.Models;
 using backend.Services.IServices;
+using backend.Services;
 
 namespace backend.Controllers
 {
@@ -23,7 +24,7 @@ namespace backend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Expense>> GetById(int id)
         {
-            var expense = await _service.GetExpenseByIdAsync(id);
+            var expense = await _service.GetByIdAsync(id);
             if (expense == null)
                 return NotFound();
 
@@ -34,24 +35,41 @@ namespace backend.Controllers
         [HttpGet("/api/groups/{groupId}/expenses")]
         public async Task<ActionResult<List<Expense>>> GetByGroupId(int groupId)
         {
-            var all = await _service.GetAllExpensesAsync();
+            var all = await _service.GetAllAsync();
             var expenses = all.FindAll(e => e.GruppoId == groupId);
             return Ok(expenses);
         }
 
         // POST: api/expenses
         [HttpPost]
-        public async Task<ActionResult<Expense>> Create([FromBody] Expense expense)
+        public async Task<IActionResult> Create([FromBody] ExpenseDTO expense)
         {
-            var created = await _service.CreateExpenseAsync(expense);
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                    .Where(e => e.Value.Errors.Any())
+                    .Select(e => new
+                    {
+                        Field = e.Key,
+                        Errors = e.Value.Errors.Select(er => er.ErrorMessage).ToList()
+                    });
+
+                return BadRequest(new
+                {
+                    Message = "Model binding failed",
+                    Errors = errors
+                });
+            }
+
+            var created = await _service.CreateAsync(expense);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         // PUT: api/expenses/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, [FromBody] Expense updatedExpense)
+        public async Task<ActionResult> Update(int id, [FromBody] ExpenseDTO updatedExpense)
         {
-            var existing = await _service.GetExpenseByIdAsync(id);
+            var existing = await _service.GetByIdAsync(id);
             if (existing == null)
                 return NotFound();
 
@@ -60,7 +78,7 @@ namespace backend.Controllers
                 return Forbid();
 
             updatedExpense.Id = id;
-            await _service.UpdateExpenseAsync(updatedExpense);
+            await _service.UpdateAsync(updatedExpense);
             return NoContent();
         }
 
@@ -68,7 +86,7 @@ namespace backend.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var existing = await _service.GetExpenseByIdAsync(id);
+            var existing = await _service.GetByIdAsync(id);
             if (existing == null)
                 return NotFound();
 
@@ -76,7 +94,7 @@ namespace backend.Controllers
             if (existing.CreatoreId != userId)
                 return Forbid();
 
-            await _service.DeleteExpenseAsync(id);
+            await _service.DeleteAsync(id);
             return NoContent();
         }
 
